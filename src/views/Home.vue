@@ -11,12 +11,18 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
+  data(){
+    return {
+      a: 1
+    }
+  },
   components: {
     HelloWorld
   },
   methods:{
     clickimg(){
       console.log(this);
+      console.log(this.a);
     }
   }
 }
