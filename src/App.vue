@@ -15,4 +15,7 @@ export default {
 </script>
 <style>
   @import url('../src/assets/css/init.css');
+  #app{
+    width: 100%;
+  }
 </style>

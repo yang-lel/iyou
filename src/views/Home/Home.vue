@@ -1,11 +1,11 @@
 <template>
   <div id="home">
       <nav-bar >
-        <div class="nav-right" slot="left">
-          <!-- <city></city> -->
+        <div class="nav-left" slot="left">
+          <change-city/>
         </div>
         <div class="nav-middle" slot="middle">
-          <tab-control :titles="['推荐','城市']"
+          <tab-control :titles="['推荐','|','城市']"
                   @tabClick="tabClick"
                   ref = "tabControl2">
           </tab-control>
@@ -17,7 +17,9 @@
           </div>
       </nav-bar>
 
-      {{list}}
+     <div class="content">
+       {{list}}
+     </div>
   </div>
 </template>
 
@@ -26,7 +28,7 @@ import NavBar from '../../components/commond/NavBar/NavBar'
 
 import TabControl from '../../components/content/tabControl/tabControl';
 import OptionBox from '../../components/content/optionBox/OptionBox'
-// import City from '../../../../changecity'
+import ChangeCity from './childcpn/ChangeCity'
 
 import { getRecommendData , getCityData} from '../../network/home'
 export default {
@@ -43,7 +45,7 @@ export default {
     NavBar,
     TabControl,
     OptionBox,
-    // City
+    ChangeCity
   },
   methods:{
     getRecommendData(){
@@ -78,6 +80,9 @@ export default {
 }
 </script>
 <style scoped>
+#home{
+  width: 100%;
+}
 .nav-middle{
   /* background-color: red; */
   text-align: center;
@@ -85,11 +90,12 @@ export default {
   font-size: 16px;
   /* color: rgb(74, 153, 243); */
   font-weight: bold;
+  width: 101%;
 }
 
 .nav-right{
   width: 100%;
-  height: 49px;
+  height: 44px;
   position: relative;
 }
 .nav-right img{
@@ -101,8 +107,8 @@ export default {
   right: 30px;
   margin: auto;
 }
-.nav-right{
-  line-height: 49px;
-  margin-left: 15px;
+.nav-left{
+  line-height: 44px;
 }
+
 </style>

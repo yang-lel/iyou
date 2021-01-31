@@ -1,7 +1,7 @@
 <template>
-<div id="app" style="font-size: 14px;color: #292929;font-family: '微软雅黑'">
-        <div class="mycity" @click="selectLocation()">
-            我的城市：&nbsp;&nbsp;<span id="qyxs" style="color:#FF0000">{{location}}</span>&nbsp;&nbsp;&nbsp;&nbsp;[更改]
+    <div id="app" style="font-size: 14px;color: #292929;font-family: '微软雅黑'">
+        <div class="mycity" >
+            <span id="qyxs" style="color:#FF0000" @click="selectLocation()">{{location + '▼'}}</span>
         </div>
         <div v-show="isShowCitys" class="city">
               <div style="text-align: center;position: fixed;top: 0;height: 32px;width:100%;line-height: 32px;z-index: 300;background-color: #FFF;box-shadow: 0 0 2px rgba(0,0,0,.2)
@@ -11,42 +11,37 @@
           <div class="city-wrapper city-wrapper-hook">
             <div class="scroller-hook">
               <div class="cities cities-hook">
-                <div v-for="i in cityData" :key="i">
+                <div v-for="(i,index) in cityData" :key="index">
                     <div class="title">{{i.name}}</div>
                     <ul>
-                        <li v-for="item in i.cities" class="item city-click" :data-name="item.name" :data-id="item.code" :key="item"><span class="border-1px name" @touchend="touchUp(item)"  @touchstart="chooseCity()">{{item.name}}</span>
+                        <li v-for="(item,index) in i.cities" class="item city-click" :data-name="item.name" :data-id="item.code" :key="index"><span class="border-1px name" @touchend="touchUp(item)"  @touchstart="chooseCity()">{{item.name}}</span>
                         </li>
                     </ul>
                 </div>
               </div>
             </div>
-            <div class="shortcut shortcut-hook" style="right: 50px;top:100px !important;" @touchstart="touchIndex">
+            <div class="shortcut shortcut-hook" style="right: 50px;top:50px !important;" @touchstart="touchIndex">
                 <ul style="width: 100px;text-align: left;padding: 20px 0">
-                    <li v-for="i in cityData" :data-anchor="i.name" class="item" :key="i">{{i.name.substr(0, 1)}}</li>
+                    <li v-for="(item,index) in cityData" :data-anchor="item.name" class="item" :key="index">{{item.name.substr(0, 1)}}</li>
                 </ul>
             </div>
           </div>
         </div>
-        <div class="toast" v-show="toastShow">
-            {{toastText}}
-        </div>
+
     </div>
+  
 </template>
 
-
-// <script type="text/javascript" 
-// src="https://webapi.amap.com/maps?v=1.3&key=6ee71f2fd5eece7797fafe8b9f7a090a&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Geocoder"></script>
-<script src="js/bscroll.min.js"></script>
-<script src="js/getping.js"></script>
-    <script src="js/city.js"></script>
-
-    
 <script>
+import AMap from 'AMap' //引入高德地图AMap
 
+import BScroll from 'better-scroll'
 
+import {getCityInfo} from '../../../network/home'
 export default {
-  name : city,
-  data: {
+  name : 'ChangeCity',
+  data(){
+    return {
             origin: 'http://192.168.99.205:800',
             captchaBoxShow: false,
             test: '测试',
@@ -62,9 +57,8 @@ export default {
             },
             map: new AMap.Map("container", {
                 resizeEnable: true,
-                //city: citycode,
                 zoom: 17, //地图显示的缩放级别
-                keyboardEnable: false,
+                keyboardEnable: true,
                 citylimit: true,
                 resizeEnable: true
             }),
@@ -73,15 +67,21 @@ export default {
             cities: document.querySelector('.cities-hook'),
             shortcut: document.querySelector('.shortcut-hook'),
             shortcutList: [],
-            cityData: cityData,// 数据源
+            cityData: [],// 数据源
             scroll: null,
             anchorMap: {},
             touch: {},
             toastShow: false,
             isShowCitys: false,
             toastText: '',
-        },
+        }
+  },
         methods: {
+          getCityInfo(){
+            getCityInfo().then(res =>{
+              this.cityData = res.cityData
+            })
+          },
             toast (str) {
                 let v = this
                 v.toastText = str
@@ -90,7 +90,7 @@ export default {
                     v.toastShow = false
                 }, 1500)
             },
-            chooseCity (city) {
+            chooseCity () {
                 let v = this
                 v.countTime = 0
                 v.countTimer = setInterval(function(e){v.countTime ++},1)
@@ -105,7 +105,7 @@ export default {
                 }
             },
             selectLocation () {
-                let v = this
+                // let v = this
                 this.isShowCitys = true
                 this.$nextTick(function() {
                     this.initCities()
@@ -128,13 +128,13 @@ export default {
                 var lng         = data.regeocode.roads[0].location.lng;
                 var lat         = data.regeocode.roads[0].location.lat;
             },
-            zddw: function () {
+            zddw() {
                 //初始定位
                 let v = this
                 v.map.plugin('AMap.Geolocation', function() {
-                    geolocation = new AMap.Geolocation({
+                    var geolocation = new AMap.Geolocation({
                         enableHighAccuracy: true, //是否使用高精度定位，默认:true
-                        //timeout: 10000, //超过10秒后停止定位，默认：无穷大
+                        timeout: 5000, //超过10秒后停止定位，默认：无穷大
                         buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
                         zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
                         noIpLocate: 0, //IP定位，0-3，0都可以使用
@@ -150,7 +150,9 @@ export default {
 
                 });
                 //解析定位结果
+
                 function onComplete(data) {
+                    console.log('定位成功');
                     var str = [];
                     str.push(data.position.lng);
                     str.push(data.position.lat);
@@ -161,29 +163,38 @@ export default {
                     geocoder.getAddress(str, function(status, result) {
                         if (status === 'complete' && result.info === 'OK') {
                             v.geocoder_CallBack(result);
+                            
                         }
-                    });
-                }
-                // 解析定位错误信息
-                function onError(data) {
-                    alert('定位失败,请手动选择所在区域');
-                }
+                    })
+    }
+                  //解析定位错误信息
+                  function onError(data) {
+                      console.log('定位失败');
+                      console.log('失败原因排查信息:'+data.message); 
+                  }
             },
-            initCities: function () {
+            initCities() {
                 let v = this
                 let y = 0;
                   var titleHeight = 28
                   var itemHeight = 44
                   v.cityData.forEach(function(e){
+
                         let name = e.name.substr(0, 1)
-                        let len = e.cities.length
+                        console.log(name);
+                        // console.log(y);
                         v.anchorMap[name] = y
-                        y -= titleHeight + len * itemHeight
+                        let len = e.cities.length
+                        
+                       
+                        y -= titleHeight + len * itemHeight 
+                        // console.log(titleHeight,len,itemHeight);
+                        
                   })
                   v.shortcut = document.querySelector('.shortcut-hook')
                   v.cityWrapper = document.querySelector('.city-wrapper-hook')
                   v.shortcut.style.top = (v.cityWrapper.clientHeight - v.shortcut.clientHeight) / 2 + 'px';
-                  v.scroll = new window.BScroll(v.cityWrapper, {
+                  v.scroll = new BScroll(v.cityWrapper, {
                     probeType: 3
                   })
                   // console.log(v.scroll, 'v.scroll')
@@ -191,7 +202,7 @@ export default {
                   // v.scroll.wrapperHeight = $('body').height()
                   v.scroll.scrollTo(0, 0);
             },
-            touchIndex: function (e) {
+            touchIndex(e) {
                 // console.log(e, 'e')
                 let v = this
                 let anchor = e.target.getAttribute('data-anchor')
@@ -201,30 +212,39 @@ export default {
                 v.touch.anchor = anchor
                 v.scrollTo(anchor)
             },
-            scrollTo: function (anchor) {
+            scrollTo(anchor) {
                 let v = this
                 v.cityScroller = document.querySelector('.scroller-hook')
                 var maxScrollY = v.cityWrapper.clientHeight - v.cityScroller.clientHeight
                 var y = Math.min(0, Math.max(maxScrollY, v.anchorMap[anchor]))
+                console.log(y);
                 if (typeof y !== 'undefined') {
                     v.scroll.scrollTo(0, y);
                 }
             },
         },
-        mounted: function () {
+        mounted() {
             let v = this
             this.zddw()
             v.initCities()
         },
+  created(){
+    this.getCityInfo()
+  }
 }
 </script>
+
 <style scoped>
-@import url('../city/css/city.css');
-@import url('../city/css/reset.css');
-.mycity {
-		text-align: center;
+ @import url('../../../assets/css/city.css');
+ @import url('../../../assets/css/reset.css');
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.mycity {
+		/* text-align: center; */
 		font-size: 12px;
-		margin: 20px 0;
+		margin-left: 10px
 	}
 	.list-box {
 		padding: 0 43px;
@@ -265,5 +285,5 @@ export default {
 		line-height: 45px;
 		padding: 0 15px;
 		max-width: 150px;
-	}
+  }
 </style>

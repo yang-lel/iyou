@@ -55,11 +55,12 @@
     position: absolute;
     z-index: 30;
     width: 40px;
+    top: 30%;
     right: 0;
     font-family: Helvetica;
 }
 .city .city-wrapper .shortcut .item {
-    height: 12px;
+    height: 18px;
     padding-top: 6px;
     padding-left: 24px;
     text-align: center;

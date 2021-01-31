@@ -11,3 +11,9 @@ export function getCityData(){
         url:'/city'
     })
 }
+
+export function getCityInfo(){
+    return request({
+        url:'/cityData'
+    })
+}
