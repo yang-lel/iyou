@@ -1,38 +1,25 @@
 <template>
   <div class="main-tab-bar">
     <tab-bar>
-  
       <tab-bar-item path="/home">
-        <img slot="item-icon" src = "../../../assets/logo_n.png">
-        <img slot="item-icon-active" src = "../../../assets/logo.png">
+        <div class="el-icon-s-home" slot="item-icon"></div>
         <div slot="item-text">首页</div>
       </tab-bar-item>
-
-      <tab-bar-item path="/map">
-        <img slot="item-icon" src = "../../../assets/logo_n.png">
-        <img slot="item-icon-active" src = "../../../assets/logo.png">
-        <div slot="item-text">地图</div>
+      <tab-bar-item path="/shop" >
+        <div class="el-icon-s-shop" slot="item-icon"></div>
+        <div slot="item-text">商店</div>
       </tab-bar-item>
-
-      <tab-bar-item path="/plus" id="plus">
-        <img slot="item-text" src = "../../../assets/logo.png">
-
+      <tab-bar-item path="/plus" class="plus">
+        <div class="el-icon-plus" slot="item-icon"></div>
       </tab-bar-item>
-
-      <tab-bar-item path="/message">
-        <img slot="item-icon" src = "../../../assets/logo_n.png">
-        <img slot="item-icon-active" src = "../../../assets/logo.png">
+      <tab-bar-item path="/message" id="message">
+        <div class="el-icon-chat-dot-square" slot="item-text"></div>
         <div slot="item-text">消息</div>
       </tab-bar-item>
-
       <tab-bar-item path="/profile">
-        <img slot="item-icon" src = "../../../assets/logo_n.png">
-        <img slot="item-icon-active" src = "../../../assets/logo.png">
+        <div class="el-icon-s-custom" slot="item-icon"></div>
         <div slot="item-text">我的</div>
       </tab-bar-item>
-
-      
-
     </tab-bar>
   </div>
 </template>
@@ -55,17 +42,27 @@ export default {
 </script>
 
 <style scoped>
-#plus{
-  height: 49px;
-  position: relative;
-  background-color: red;
+.plus{
+  background-color: #409EFF;
+  padding-top: 8px;
 }
-#plus img{
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  left: 0;
-  right: 0;
+.el-icon-chat-dot-square::before{
+  font-size: 28px;
+}
+.el-icon-s-home::before{
+  font-size: 28px;
+}
+.el-icon-s-custom::before{
+  font-size: 28px;
+}
+.el-icon-s-shop::before{
+  font-size: 28px;
+}
+.el-icon-s-opportunity::before{
+  font-size: 28px;
+}
+.el-icon-plus::before{
+  font-size: 28px;
+  color: #fff;
 }
 </style>

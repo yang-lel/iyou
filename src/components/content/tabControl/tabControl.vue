@@ -37,30 +37,30 @@ export default {
 <style scoped>
 .tab-control{
     display: flex;
-    /* text-align: center; */
-    /* font-size: 60px; */
     height: 40px;
     line-height: 40px;
-    background-color: rgba(226, 247, 247, 0.9);
-    box-shadow: 0 -0.5px rgba(134, 134, 134, 0.116);
 }
 .tab-control-item{
     flex: 1;
+    text-align: center;
+
 
 }
 .tab-control-item span{
     padding: 5px;
     font-size: 16px;
 }
-.tab-control-item:nth-child(2){
-pointer-events: none;
+div .tab-control-item:nth-child(2){
+    pointer-events: none;
+    max-width: 16px;
 }
 
 .active{
-    color: #ff5777;
+    color: #409EFF;
+    border-bottom: 3px solid #409EFF;
     
 }
-.active span{
-    border-bottom: 3px solid #ff5777;
-}
+/* .active span{
+    border-bottom: 3px solid #409EFF;
+} */
 </style>

@@ -1,11 +1,12 @@
 <template>
     <div id="app" style="font-size: 14px;color: #292929;font-family: '微软雅黑'">
         <div class="mycity" >
-            <span id="qyxs" style="color:#FF0000" @click="selectLocation()">{{location + '▼'}}</span>
+            <span id="qyxs" style="color: #409EFF" @click="selectLocation()">{{location + '▼'}}</span>
         </div>
         <div v-show="isShowCitys" class="city">
               <div style="text-align: center;position: fixed;top: 0;height: 32px;width:100%;line-height: 32px;z-index: 300;background-color: #FFF;box-shadow: 0 0 2px rgba(0,0,0,.2)
               ">
+              <span @click="backHome" class="el-icon-arrow-left"></span>
                 我的城市：&nbsp;&nbsp;<span id="qyxs" style="color:#FF0000">{{location}}</span>
               </div>
           <div class="city-wrapper city-wrapper-hook">
@@ -42,7 +43,6 @@ export default {
   name : 'ChangeCity',
   data(){
     return {
-            origin: 'http://192.168.99.205:800',
             captchaBoxShow: false,
             test: '测试',
             countTime: 0,
@@ -76,6 +76,18 @@ export default {
             toastText: '',
         }
   },
+  watch: {
+    location: {
+        handler(newVal) {
+            // this.change_number++
+        this.$store.commit('$_setLocation', newVal)
+        // console.log(this.location);
+        this.$emit('locationChange')
+        console.log(this.$store.state.location);
+        },
+        immediate: true
+    }
+} ,
         methods: {
           getCityInfo(){
             getCityInfo().then(res =>{
@@ -181,34 +193,40 @@ export default {
                   v.cityData.forEach(function(e){
 
                         let name = e.name.substr(0, 1)
-                        console.log(name);
+                        // console.log(name);
                         // console.log(y);
                         v.anchorMap[name] = y
                         let len = e.cities.length
-                        
-                       
+                        // console.log(len);
+
                         y -= titleHeight + len * itemHeight 
+                        
                         // console.log(titleHeight,len,itemHeight);
                         
                   })
                   v.shortcut = document.querySelector('.shortcut-hook')
                   v.cityWrapper = document.querySelector('.city-wrapper-hook')
                   v.shortcut.style.top = (v.cityWrapper.clientHeight - v.shortcut.clientHeight) / 2 + 'px';
+                //   console.log(v.shortcut.clientHeight);
                   v.scroll = new BScroll(v.cityWrapper, {
                     probeType: 3
                   })
-                  // console.log(v.scroll, 'v.scroll')
-                  // v.scroll.hasVerticalScroll = true
-                  // v.scroll.wrapperHeight = $('body').height()
+                //   console.log(v.scroll, 'v.scroll')
+                //   v.scroll.hasVerticalScroll = true
+                //   v.scroll.wrapperHeight = $('body').height()
                   v.scroll.scrollTo(0, 0);
             },
             touchIndex(e) {
                 // console.log(e, 'e')
                 let v = this
                 let anchor = e.target.getAttribute('data-anchor')
+                // console.log(anchor);
                 // console.log(anchor ,'anchor')
                 let firstTouch = e.touches[0]
                 v.touch.y1 = firstTouch.pageY
+                // console.log(firstTouch.pageY);
+                // console.log(v.touch.anchor);
+                // console.log(anchor);
                 v.touch.anchor = anchor
                 v.scrollTo(anchor)
             },
@@ -216,12 +234,16 @@ export default {
                 let v = this
                 v.cityScroller = document.querySelector('.scroller-hook')
                 var maxScrollY = v.cityWrapper.clientHeight - v.cityScroller.clientHeight
+                // console.log(v.anchorMap[anchor]);
                 var y = Math.min(0, Math.max(maxScrollY, v.anchorMap[anchor]))
-                console.log(y);
+                // console.log(y);
                 if (typeof y !== 'undefined') {
                     v.scroll.scrollTo(0, y);
                 }
             },
+            backHome(){
+                this.isShowCitys = false
+            }
         },
         mounted() {
             let v = this
@@ -286,4 +308,13 @@ export default {
 		padding: 0 15px;
 		max-width: 150px;
   }
+.el-icon-arrow-left::before{
+    font-size: 25px;
+    color: red;
+    left: 10px;
+    position: absolute;
+    top: 3.5px;
+ 
+}
+
 </style>

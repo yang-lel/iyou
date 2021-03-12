@@ -15,14 +15,14 @@
     line-height: 28px;
     background-color: #f5f5f5;
     font-family: Helvetica;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #878787;
 }
 .city .city-wrapper .cities .item {
     height: 44px;
     padding: 0 16px;
     line-height: 44px;
-    font-size: 1.6rem;
+    font-size: 1rem;
 }
 .city .city-wrapper .cities .item .name {
     display: block;
@@ -64,8 +64,9 @@
     padding-top: 6px;
     padding-left: 24px;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #fa8919;
+    /* background-color: red; */
 }
 @media only screen and (max-height: 600px) {
     .city .city-wrapper .shortcut .item {

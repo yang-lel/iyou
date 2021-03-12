@@ -17,8 +17,11 @@ export default {
   display: flex;
   height: 44px;
   width: 100%;
-  background-color: rgba(226, 247, 247, 0.9);
-  box-shadow: 0 -0.5px rgba(134, 134, 134, 0.116);
+  background-color:  #fff;
+  box-shadow:  0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  position: fixed;
+  z-index: 100;
+  top: 0;
 
 }
 #content div{

@@ -2,18 +2,30 @@ import {request} from "./request";
 
 export function getRecommendData(){
     return request({
-        url:'/recommend'
+        url:'/getrecommenddata'
     })
 }
 
-export function getCityData(){
+export function getCityData(location){
     return request({
-        url:'/city'
+        url:'/getCitydata',
+        params : {
+            location
+        }
     })
 }
 
 export function getCityInfo(){
     return request({
         url:'/cityData'
+    })
+}
+
+export function getSearchData(search){
+    return request({
+        url : '/search',
+        params : {
+            search
+        }
     })
 }
