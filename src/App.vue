@@ -1,8 +1,8 @@
 <template>
 
   <div id="app">
-    <keep-alive exclude="Login"><router-view/></keep-alive>
-    <main-tab-bar v-show="(path === '/home' || path === '/shop' || path === '/plus' || path === '/message'|| path === '/profile' ) "></main-tab-bar>
+    <keep-alive exclude="Login,Details"><router-view/></keep-alive>
+    <main-tab-bar v-show="(path === '/home' || path === '/shop' || path === '/plus' || path === '/message'|| path === '/profile') "></main-tab-bar>
   </div>
 </template>
 <script>

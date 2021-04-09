@@ -34,8 +34,8 @@
     </div>
     </div>
 <details-tab-bar v-show="isTabBarShow"/>
-<div class="title">相关推荐</div>
-<list :arr="list"></list>
+<!-- <div class="title">相关推荐</div>
+<list :arr="list"/> -->
   </div>
 
 </template>
@@ -57,17 +57,30 @@ export default {
     return {
       detailsInfo : {
         banners : [],
-      content : ``,
-      usericon : '',
-      username : '',
-      date : '',
-      location : '',
-      desc : '',
-      keyword : []
+        content : ``,
+        usericon : '',
+        username : '',
+        date : '',
+        location : '',
+        desc : '',
+        keyword : []
       },
       isTabBarShow : true,
-      p_id : null,
-      list : null
+      p_id : this.$route.params.p_id,
+      list : null,
+      reFresh : true
+    }
+  },
+   watch: {
+    p_id: {
+      handler(newValue, oldValue) {
+        this.reFresh= false
+        console.log(this.p_id);
+        this.$nextTick(()=>{
+          this.reFresh = true
+        })
+      },
+      deep: true
     }
   },
   components:{
@@ -78,20 +91,22 @@ export default {
     DetailsMap
   },
   created(){
+    console.log('创建');
     this.p_id=this.$route.params.p_id
     getDetailsData(this.p_id).then(res => {
       console.log(res);
-      let keyword = res[0].keyword.split('，')
-      this.detailsInfo.banners = res[1].banners
-      this.detailsInfo.content = res[0].p_content
-      this.detailsInfo.username = res[0].username
-      this.detailsInfo.usericon = res[0].usericon
-      this.detailsInfo.desc = res[0].p_desc
-      this.detailsInfo.keyword = keyword
-      this.detailsInfo.location = res[0].location
-      this.detailsInfo.date = res[0].p_date
+      if(res.code == 200 && res.data){
+        let keyword = res.data[0].keyword.split('，')
+        this.detailsInfo.banners = res.data[1].banners
+        this.detailsInfo.content = res.data[0].p_content
+        this.detailsInfo.username = res.data[0].username
+        this.detailsInfo.usericon = res.data[0].usericon
+        this.detailsInfo.desc = res.data[0].p_desc
+        this.detailsInfo.keyword = keyword
+        this.detailsInfo.location = res.data[0].location
+        this.detailsInfo.date = res.data[0].p_date
+      }
     })
-
     getRecommendData().then(res => {
       this.list = res
     })
@@ -102,7 +117,9 @@ export default {
   },
   methods:{
     back(){
-      this.$router.go(-1)
+      // this.$router.go(-1);
+      console.log(this.$router.go(-1));
+      // this.$destroyed();
     },
     test(){
       var height = this.$refs.jo.offsetHeight;
@@ -127,8 +144,8 @@ export default {
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
-  deactivated(){
-    this.$destroy()
+  destroyed(){
+    console.log('111');
   }
 }
 </script>
@@ -138,7 +155,6 @@ export default {
   width: 100%;
 }
 .nav-middle{
-  /* width: 200px; */
   min-width: 130px;
   display: -ms-flexbox;
   display: flex;
@@ -170,15 +186,13 @@ div /deep/ .el-button--small{
   padding-bottom: 15px;
 }
 .content-head{
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align :center;
-  align-items :flex-end;
   margin-top: 20px;
   width: 90%;
   margin-left: 5%;
 }
 .desc{
+  width: 100%;
+  white-space: normal;
   text-align: left;
   font-size: 24px;
   color: #3f3f3f;
@@ -222,6 +236,7 @@ div /deep/ .el-button--small{
   margin-left: 3%;
   margin-right: 3%;
   border-radius: 15px;
+  margin-bottom: 50px;
 }
 .title{
   text-align: center;

@@ -144,7 +144,7 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
-  z-index: 99;
+  z-index: 9999;
   background-color: #fff;
 }
 #details-tab-bar .btu{

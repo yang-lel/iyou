@@ -41,7 +41,9 @@
         <span class="userid">{{userid}}</span>
       </div>
       <span class="usersay">{{usersay}}</span>
-
+      <div class="user_count">
+        24.0w获赞 25.0w关注 15w粉丝
+      </div>
        <el-button type="primary" icon="el-icon-plus" size="small " class="btu">朋友</el-button>
     </div>
 
@@ -136,7 +138,6 @@ export default {
       if(this.$store.state.user === null){
         return 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
       }else{
-        // console.log(JSON.parse(JSON.stringify(JSON.stringify(this.$store.state.user))));
         return JSON.parse(this.$store.state.user).user.usericon;
       }
     },
@@ -155,8 +156,16 @@ export default {
    getProfilePlus(){
      if(JSON.parse(this.$store.state.user) !== null){
        getProfilePlus(JSON.parse(this.$store.state.user).user.userid).then(res =>{
-       console.log(res);
-       this.viewuser.Plist  = res 
+       if(res.code == 200 && res.data){
+         this.viewuser.Plist  = res.data
+       }else if(res.code == 403){
+         alert('登录令牌失效')
+       }else if(res.code == 404){
+         alert('登录异常')
+       }else if(res.code == 405){
+         alert('请登陆后操作！')
+       }
+       
      })
      }
    },
@@ -164,7 +173,15 @@ export default {
      if(JSON.parse(this.$store.state.user) !== null){
         getCollectionData(JSON.parse(this.$store.state.user).user.userid).then(res =>{
           console.log(res);
-          this.viewuser.Clist = res
+          if(res.code == 200 && res.data){
+            this.viewuser.Clist  = res.data
+          }else if(res.code == 403){
+            alert('登录令牌失效')
+          }else if(res.code == 404){
+            alert('登录异常')
+          }else if(res.code == 405){
+            alert('请登陆后操作！')
+          }
         })
      }
    },
@@ -192,6 +209,7 @@ export default {
         alert('您好没有登录')
       }else{
         this.$store.commit('$_removeStorage');
+        localStorage.removeItem("token")
         console.log(this.$store.state.user);
         this.drawer = false
         this.viewuser.Plist = null

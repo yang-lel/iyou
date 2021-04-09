@@ -1,7 +1,7 @@
 <template>
   <div class="container-water-fall" v-if="reFresh">
-    <waterfall :col='2'  :data="arr"  @loadmore="loadmore"  @scroll="scroll" height='100vh'>
-        <div class="cell-item" v-for="item in arr" :key="item.p_id" @click="itemClick(item.p_id)">
+    <waterfall :col='2'  :data="arr"  @loadmore="loadmore"  @scroll="scroll" height='100%'>
+        <div class="cell-item" v-for="(item,index) in arr" :key="index" @click="itemClick(item.p_id)">
           <img v-if="item.p_image" :src="item.p_image"   />
           <div class="item-body">
               <div class="item-desc">{{item.p_desc}}</div>
@@ -12,7 +12,6 @@
                       <div class="date">{{item.p_date | showDate}}</div>
                     </div>
                   <div class="like" :class="item.liked?'active':''" >
-                      <!-- <i class="el-icon-star-off"></i> -->
                       <img src="../../../assets/dianzan.svg" alt="">
                       <div class="like-total">{{item.liked}}</div>  
                   </div>
@@ -65,11 +64,10 @@ export default {
           console.log(this.col)
     },
     loadmore(){
-      console.log(1);
-      this.arr = this.arr.concat(this.arr)
+      console.log(111);
+      // this.arr = this.arr.concat(this.arr)
     },
     itemClick(id){
-      this.$router.push('/')
       this.$router.push('/details/' + id)
     }
   },
@@ -100,7 +98,9 @@ export default {
     margin-bottom: 10px;
     height: auto;
 }
-
+.container-water-fall{
+  margin-bottom: 50px;
+}
 .container-water-fall .cell-item{
     width: 100%;
     background: #fff;

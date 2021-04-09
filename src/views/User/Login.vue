@@ -166,15 +166,15 @@ export default {
       Login(){
         Login(this.form.userid,this.form.password).then(res =>{
           console.log(res);
-          if( res == '账号或密码不正确！'){
-            alert('账号或密码不正确!')
-          }else if(res === '账号不存在!'){
-            alert('账号不存在!')
-          }else{
-            this.$store.commit('$_setStorage', {user: res[0]});
+          if(res.code == 200 && res.data){
+            this.$store.commit('$_setStorage',{user:res.data})
+            //储存token
+            localStorage.setItem("token",res.token)
             this.$router.go(-1);
-            console.log(this.$store.state.user);
-            console.log(localStorage.getItem('userinfo'));
+          }else if(res.code == 401){
+            alert('账号或密码不正确!')
+          }else if(res.code == 402){
+            alert('账号不存在!')
           }
         })
       },
@@ -182,14 +182,12 @@ export default {
       register(){
         Register(this.ruleForm.userid,this.ruleForm.password,this.ruleForm.username).then(res =>{
           console.log(res);
-          if( res == '账号已被注册'){
-            alert('账号已被注册')
-          }else{
-            this.$store.commit('$_setStorage', {user: res})
-            // this.$store.commit('$_removeStorage')
+          if( res.code  == 200 && res.data){
+            this.$store.commit('$_setStorage', {user: res.data})
+            localStorage.setItem("token",res.token)
             this.$router.go(-1)
-            // console.log(this.$store.state);
-            // console.log(localStorage.getItem('userinfo'));
+          }else if(res.code == 402){
+            alert('账号已被注册')
           }         
         })
       },      

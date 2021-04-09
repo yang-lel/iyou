@@ -42,7 +42,7 @@
               <div class="nav-title">跟团游</div>
               </div>
               <div class="content-box">
-              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+              <el-button type="danger" icon="el-icon-s-goods" circle></el-button>
               <div class="nav-title">自由行</div>
               </div>
             </el-row>
@@ -125,15 +125,18 @@ export default {
     */
     getRecommendData(){
       getRecommendData().then(res =>{
-        // console.log(res);
-        this.recommend = res;
-        this.list = this.recommend
+        if(res.code == 200 && res.code){
+          this.recommend = res.data;
+          this.list = this.recommend
+        }
+        
       })
     },
     getCityData(){
       getCityData(this.$store.state.location).then(res =>{
-        console.log(res);
-        this.city = res;
+        if(res.code == 200 && res.code){
+          this.city = res.data;
+        }
       })
     },
 
