@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import {getProfilePlus,getCollectionData} from '../../network/profile'
+// import {getProfilePlus,getCollectionData} from '../../network/profile'
 import {formatDate} from '../../common/utils'
 export default {
   name : 'Profile',

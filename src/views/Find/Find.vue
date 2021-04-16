@@ -25,7 +25,7 @@
 
 <script>
 import NavBar from '../../components/commond/NavBar/NavBar'
-import {changePassWord} from '../../network/profile'
+import {changepassword} from '../../network/profile'
   export default {
     components:{
       NavBar
@@ -48,7 +48,7 @@ import {changePassWord} from '../../network/profile'
         }else if(this.pass === ''){
           alert('密码不能为空')
         }else{
-          changePassWord(JSON.parse(this.$store.state.user).user.userid,this.oldpass,this.pass).then(res => {
+          changepassword(JSON.parse(this.$store.state.user).user.userid,this.oldpass,this.pass).then(res => {
             console.log(res);
             if(res.message === '修改成功'){
               alert(res.message)
