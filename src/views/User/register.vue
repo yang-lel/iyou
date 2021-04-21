@@ -14,7 +14,8 @@
 </template>
 
 <script>
-import {comment,like,checkUserInfo,getUserInfo,changeSay,changepassword,register,login,getprofileplus,getcollectiondata,collection,plus} from '../../network/profile'
+import {like,checkUserInfo,getUserInfo,changeSay,changepassword,register,login,getprofileplus,getcollectiondata,collection,plus} from '../../network/profile'
+import {comment} from '../../network/home'
 
 import axios from 'axios'
 export default {
