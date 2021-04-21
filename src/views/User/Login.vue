@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {Login ,Register} from '../../network/login'
+import {login ,register} from '../../network/profile'
 export default {
   name : 'Login',
    data() {
@@ -164,12 +164,20 @@ export default {
       },
       //登录
       Login(){
-        Login(this.form.userid,this.form.password).then(res =>{
+        login(this.form.userid,this.form.password).then(res =>{
           console.log(res);
           if(res.code == 200 && res.data){
-            this.$store.commit('$_setStorage',{user:res.data})
+            let userinfo = {
+              username : res.data.username,
+              userid : res.data.userid,
+              userbgc : res.data.userbgc,
+              usericon : res.data.usericon,
+              usersay : res.data.usersay         
+            }
+            //储存用户信息
+            this.$store.commit('$_setUserInfo',userinfo)
             //储存token
-            localStorage.setItem("token",res.token)
+            localStorage.setItem("token",res.data.token)
             this.$router.go(-1);
           }else if(res.code == 401){
             alert('账号或密码不正确!')
@@ -180,12 +188,21 @@ export default {
       },
       //注册
       register(){
-        Register(this.ruleForm.userid,this.ruleForm.password,this.ruleForm.username).then(res =>{
+        register(this.ruleForm.userid,this.ruleForm.password,this.ruleForm.username).then(res =>{
           console.log(res);
           if( res.code  == 200 && res.data){
-            this.$store.commit('$_setStorage', {user: res.data})
-            localStorage.setItem("token",res.token)
-            this.$router.go(-1)
+            let userinfo = {
+              username : res.data.username,
+              userid : res.data.userid,
+              userbgc : res.data.userbgc,
+              usericon : res.data.usericon,
+              usersay : res.data.usersay         
+            }
+            //储存用户信息
+            this.$store.commit('$_setUserInfo',userinfo)
+            //储存token
+            localStorage.setItem("token",res.data.token)
+            this.$router.go(-1);
           }else if(res.code == 402){
             alert('账号已被注册')
           }         

@@ -4,7 +4,6 @@
 
     <i @click="drawer = true"  class="el-icon-s-fold">
     </i>
-
       <el-drawer
       direction="ltr"
       size="80%"
@@ -27,10 +26,9 @@
         <li>关于我们</li>
         <li>联系客服</li>
       </ul>
-      <ul class="last-li">
+      <ul v-if="$store.state.userinfo" class="last-li">
         <li @click="backlogin">退出登录</li>
       </ul>
-
     </el-drawer>
 
     </div>
@@ -41,9 +39,9 @@
         <span class="userid">{{userid}}</span>
       </div>
       <span class="usersay">{{usersay}}</span>
-      <div class="user_count">
+      <!-- <div class="user_count">
         24.0w获赞 25.0w关注 15w粉丝
-      </div>
+      </div> -->
        <el-button type="primary" icon="el-icon-plus" size="small " class="btu">朋友</el-button>
     </div>
 
@@ -109,44 +107,50 @@ export default {
       viewuser : {
         Plist : null, 
         Clist :null
-      }
+      },
+      // userinfo : {
+      //   username : '请先登录',
+      //   userid : '',
+      //   usericon : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      //   userbgc : 'https://i.ibb.co/THkz93S/userbgc.png',
+      //   usersay : '这个人很懒，什么都没留下'
+      // },
     };
   },
   computed:{
     username(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo === null){
         return '请先登录'
       }else{
-        return JSON.parse(this.$store.state.user).user.username
+        return this.$store.state.userinfo.username
       }
     },
     userid(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo === null){
         return ''
       }else{
-        return 'id :' + JSON.parse(this.$store.state.user).user.userid
+        return 'id :' + this.$store.state.userinfo.userid
       }
     },
     usersay(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo === null){
         return '这个人很懒，什么都没留下'
       }else{
-        return JSON.parse(this.$store.state.user).user.usersay
+        return this.$store.state.userinfo.usersay
       }
     },
     usericon(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo === null){
         return 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
       }else{
-        return JSON.parse(this.$store.state.user).user.usericon;
+        return this.$store.state.userinfo.usericon
       }
     },
     userbgc(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo == null){
         return 'https://i.ibb.co/THkz93S/userbgc.png'
       }else{
-        // console.log(user);
-        return JSON.parse(this.$store.state.user).user.userbgc
+        return this.$store.state.userinfo.userbgc
       }
     }
   },
@@ -192,29 +196,15 @@ export default {
       this.$router.push('/home')
     },
     tologin(){
-      if(this.$store.state.user === null){
+      if(this.$store.state.userinfo == null){
         this.$router.push('/login')
       }
     },
-    isLogin(){
-      console.log(this.$store.state.user);
-      if(this.$store.state.user === null){
-        return true
-      }else{
-        return false
-      }
-    },
     backlogin(){
-      if(this.$store.state.user === null){
-        alert('您好没有登录')
-      }else{
-        this.$store.commit('$_removeStorage');
-        localStorage.removeItem("token")
-        console.log(this.$store.state.user);
-        this.drawer = false
-        this.viewuser.Plist = null
-        this.viewuser.Clist = null 
-      }
+      this.$store.commit('$_setUserInfo',null);
+      this.viewuser.Plist = null
+      this.viewuser.Clist = null 
+      this.drawer = false
     },
     changeUserInfo(){
       if(this.$store.state.user === null){

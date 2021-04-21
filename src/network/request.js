@@ -1,7 +1,13 @@
 import axios from 'axios'
+import { Date } from 'core-js';
 
 export function request(config) {
   // 1.创建axios的实例
+  let token = ''
+  if(localStorage.getItem("token")){
+    // console.log(localStorage.getItem("token"));
+    token = localStorage.getItem("token")
+  }
   const instance = axios.create({
     // baseURL: 'http://localhost:3001',
     baseURL: 'http://8.131.50.165:3001/',
@@ -9,8 +15,7 @@ export function request(config) {
     headers:{
         'Content-Type': 'application/json;charset=utf-8',
         Accept: 'application/json',
-        // 'Content-Type': 'multipart/form-data;',
-        Authorization : '8fd6n1viG794909047lXSalk1aKV'
+        Authorization : token
     }
   })
   // 2.axios的拦截器
@@ -23,6 +28,8 @@ export function request(config) {
 
   // 2.2.响应拦截
   instance.interceptors.response.use(res => {
+    let date = new Date().getTime()
+    console.log(res.config.url + date);
     return res.data
   }, err => {
     console.log(err);

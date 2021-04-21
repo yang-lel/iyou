@@ -7,6 +7,7 @@
 </template>
 <script>
 import MainTabBar from '../src/components/commond/TabBar/MainTabBar'
+import {checkUserInfo} from './network/profile'
 export default {
   name : 'App',
   data(){
@@ -24,6 +25,21 @@ export default {
     $route(to,from){
       this.path = to.path
     }
+  },
+  methods:{
+    checkUser(){
+      checkUserInfo().then(res => {
+        if(res.code == 200 && res.data){
+          console.log(res);
+          this.$store.commit('$_setUserInfo', res.data)
+        }else{
+          console.log(res)
+        }
+      })
+    }
+  },
+  created(){
+    this.checkUser()
   }
 }
 </script>

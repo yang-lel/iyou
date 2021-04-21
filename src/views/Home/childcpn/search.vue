@@ -12,26 +12,26 @@
   <div class="hot-search" v-if="search===''">
     <div>热门搜索</div>
     <ol>
-      <li v-for="(item,index) in hotSearch" :key="index">{{item}}</li>
+      <li v-for="(item,index) in hotSearch" @click="clickHot(item)" :key="index">{{item}}</li>
     </ol>
   </div>
 
   <div v-else>
-    <div v-if="arr.length === 0 " class="no-search">
+    <div v-if=" arr == null" class="no-search">
       <img src="../../../assets/千库网_暂无数据_元素编号12786190.png" alt="">
       暂无相关信息，换个关键词试试
     </div>
     <div v-else class="search-content">
       <div v-for="(item,index) in arr" :key="index" class="aaa">
       <div class="item" >
-        <el-avatar :src="item.usericon"></el-avatar>
+        <el-avatar :src="item.userinfo.usericon"></el-avatar>
         <div style="height : 40px; flex-flow: column; display:flex; margin-left:10px">
-          <div class="name">{{item.username}}</div>
+          <div class="name">{{item.userinfo.username}}</div>
           <div class="date">{{item.p_date | showDate}}</div>
         </div>
       </div>
       <div class="item-desc">{{item.p_desc}}</div>
-        <img v-if="item.p_image" :src="item.p_image" />
+        <img class="item_img" v-if="item.p_image" :src="item.p_image" />
       </div>
     </div>
   </div>
@@ -46,7 +46,7 @@ export default {
   data(){
     return {
       search : '',
-      hotSearch :['成都网红店打卡','成都网红店打卡','成都网红店打卡','成都网红店打卡','成都网红店打卡',
+      hotSearch :['上海','成都网红店打卡','成都网红店打卡','成都网红店打卡','成都网红店打卡',
       '成都网红店打卡','成都网红店打卡','成都网红店打卡','成都网红店打卡','成都网红店打卡'],
       // arr : '',
       arr : []
@@ -56,21 +56,26 @@ export default {
     backHome(){
       this.$router.go(-1)
     },
+    clickHot(val){
+      this.search = val
+      getSearchData(this.search).then(res =>{
+        console.log(res);
+        this.arr = res.data.data
+      })
+    },
     //封装网络请求的方法
     //每次知道input change后，直接调用
     getSearchData(search){
-      console.log(this.search);
+      console.log(1);
       getSearchData(search).then(res =>{
-        // this.arr = []
-        let date = new Date()
-        console.log(res,date);
-        this.arr = res
+        console.log(res);
+        this.arr = res.data.data
       })
     }
   },
   filters:{
     showDate: function (value) {
-          let date = new Date(value);
+          let date = new Date(value*1000);
           return formatDate(date, 'yyyy-MM-dd hh:mm:ss')
         }
   },
@@ -138,6 +143,7 @@ div /deep/ .el-input__inner{
 .no-search{
   text-align: center;
   color: #909399;
+  margin-top: 80px;
 }
 .no-search img{
   width: 60%;
@@ -163,8 +169,9 @@ div /deep/ .el-input__inner{
   margin-top: 10px;
   text-indent: 2em;
 }
-.aaa img{
+.item_img{
   width: 100%;
+  height: 300px;
   border-radius: 5px;
 }
 .aaa{

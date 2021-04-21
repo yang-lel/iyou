@@ -2,7 +2,7 @@
   <div id="details-tab-bar">
     <div class="btu" @click="open2"><i class="el-icon-star-off"></i>收藏</div>
     <div class="btu" @click="open1"><i class="el-icon-help"></i>点赞</div>
-    <div class="btu" @click="drawer = true"><i class="el-icon-chat-dot-round"></i>评论</div>
+    <div class="btu" @click="clickComment"><i class="el-icon-chat-dot-round"></i>评论</div>
 
     <el-drawer
       :append-to-body="true"
@@ -11,104 +11,52 @@
       direction="btt"
       size="70%">
       <h2>评论</h2>
-      <div v-for="(item,index) in comment" :key="index" class="comment_item">
+      <div class="tmpe1"></div>
+      <div v-infinite-scroll="load" style="overflow:auto" v-if="comment.data != null">
+        <div v-for="(item,index) in comment.data" :key="index" class="comment_item">
         <div class="userinfo">
-          <el-avatar :src="item.usericon"></el-avatar>
-          <div class="name">{{item.username}}</div>
-          <div class="date">{{item.date}}</div>
+          <el-avatar :src="item.userinfo.usericon"></el-avatar>
+          <div class="name">{{item.userinfo.username}}</div>
+          <div class="date">{{item.date | showDate}}</div>
         </div>
           <div class="content">{{item.content}}</div>
       </div>
-
+      </div>
+      <div v-else class="no_comment_tips">
+        还没有评论,快来发布吧！
+      </div>
+      <div class="tmpe"></div>
     <div class="comment_btu">
-      <el-input v-model="input" placeholder="快写下您的评论吧"></el-input> <el-button>发送</el-button>
+      <el-input v-model="commentInput" placeholder="快写下您的评论吧"></el-input>
+      <el-button type="primary" round @click="sendComment">发送</el-button>
     </div>
     </el-drawer>
   </div>
 </template>
 
 <script>
+import {getComment,comment} from '../../../network/home'
+import {formatDate} from '../../../common/utils'
 export default {
   name : 'DetailsTabBar',
   data() {
     return {
       drawer: false,
-      input : '',
-      comment : [
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        },
-        {
-          usericon : 'https://ss3.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/0df431adcbef7609510bf4062cdda3cc7cd99e22.jpg',
-          username : '默认的小妖精',
-          date : '2020-12-12 12:12',
-          content : 'zhenhao haochide budeliao '
-        }
-      ]
+      commentInput : '',
+      comment : {
+        total_page : 0,
+        data : null,
+        current_page : 1,
+        total_num : 0
+      },
+      page_size : 5
     };
+  },
+  props:{
+    p_id : {
+      type : Number,
+      default : 0
+    }
   },
   methods:{
     open1() {     
@@ -130,6 +78,55 @@ export default {
           showClose : true,
           duration : 2000
         });
+    },
+    clickComment(){
+      this.drawer = true
+      this.getComment()
+    },
+    getComment(){
+      getComment(this.p_id,this.comment.current_page,this.page_size).then(res => {
+        console.log(res);
+        if(res.code == 200 && res.data.data){
+          if(res.data.current_page > 1){
+            this.comment.data = this.comment.data.concat(res.data.data)
+          }else{
+            this.comment.data = res.data.data
+          }
+          this.comment.total_num = res.data.total_num
+          this.comment.current_page = res.data.current_page
+          this.comment.total_page = res.data.total_page
+        }
+      })
+    },
+    load(){
+      if(this.comment.data){
+        if(this.comment.data.length >= this.comment.total_num){
+          return
+        }
+        this.comment.current_page += 1
+        this.getComment()
+      }
+    },
+    sendComment(){
+      if(this.commentInput == ''){
+        alert('评论不能为空')
+        return
+      }
+      console.log(this.p_id,this.commentInput,this.$store.state.userinfo.userid);
+      comment(this.p_id,this.commentInput,this.$store.state.userinfo.userid).then(res=>{
+        console.log(res);
+        if(res.code == 200 && res.data){
+          this.comment.current_page = 1
+          this.getComment()
+          this.commentInput = ''
+        }
+      })
+    }
+  },
+  filters:{
+    showDate: function (value) {
+      let date = new Date(value*1000);
+      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   }
 
@@ -144,7 +141,7 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
-  z-index: 9999;
+  z-index: 99;
   background-color: #fff;
 }
 #details-tab-bar .btu{
@@ -160,7 +157,11 @@ export default {
   /* border: 1px solid red; */
   border-bottom: 1px solid #e9e9eb;
   margin-top: 15px;
-  margin-bottom: 45px;
+  /* margin-bottom: 45px; */
+}
+.tmpe{
+  width: 100%;
+  height: 40px;
 }
 .userinfo{
   display: -ms-flexbox;
@@ -185,6 +186,13 @@ h2{
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
   height: 44px;
   line-height: 44px;
+  position: fixed;
+  width: 100%;
+  background-color: #fff;
+}
+.tmpe1{
+  width: 100%;
+  height: 44px;
 }
 .content{
   margin-left: 40px;
@@ -207,15 +215,23 @@ div >>> .el-drawer__container ::-webkit-scrollbar{
   width: 100%;
   position: fixed;
   bottom: 0;
+  z-index: 999;
+  background-color: #fff;
 }
 div >>> .el-button{
   border:  none;
-  color: #409EFF;
+  /* background-color: red; */
+  /* color: #409EFF; */
+  color: #fff;
 }
 div >>>.el-input__inner{
   border : none;
 }
 .message{
   background-color: #409EFF;
+}
+.no_comment_tips{
+  text-align: center;
+  margin-top: 50px;
 }
 </style>

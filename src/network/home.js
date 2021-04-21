@@ -29,3 +29,26 @@ export function getSearchData(search){
         }
     })
 }
+
+export function getComment (p_id,page,page_size){
+  return request({
+      url : '/getcomment',
+      params : {
+          p_id,
+          page,
+          page_size
+      }
+  })
+}
+
+export function comment(p_id,content,userid){
+  return request({
+    url : '/comment',
+    method : "POST",
+    data : {
+      p_id,
+      content,
+      userid
+    }
+  })
+}

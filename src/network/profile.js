@@ -24,18 +24,6 @@ export function getcollectiondata(userid,page,page_size){
   })
 }
 
-export function comment(p_id,content,userid){
-  return request({
-    url : '/comment',
-    method : "POST",
-    data : {
-      p_id,
-      content,
-      userid
-    }
-  })
-}
-
 export function like(p_id,is_like,userid){
   return request({
     url : '/like',

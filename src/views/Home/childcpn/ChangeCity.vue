@@ -91,7 +91,10 @@ export default {
         methods: {
           getCityInfo(){
             getCityInfo().then(res =>{
-              this.cityData = res.cityData
+              // console.log(res);
+							if(res.code == 200 && res.data){
+              	this.cityData = res.data.cityData
+							}
             })
           },
             toast (str) {

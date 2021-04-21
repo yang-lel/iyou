@@ -1,14 +1,15 @@
 <template>
-  <div class="container-water-fall" v-if="reFresh">
-    <waterfall :col='2'  :data="arr"  @loadmore="loadmore"  @scroll="scroll" height='100%'>
-        <div class="cell-item" v-for="(item,index) in arr" :key="index" @click="itemClick(item.p_id)">
-          <img v-if="item.p_image" :src="item.p_image"   />
+<div>
+    <div class="container-water-fall" v-if="list.data && list.data.length !=undefined">
+    <waterfall :col='2'  :data="list.data"  @loadmore="loadmore" @scroll="scroll" height="100%">
+        <div class="cell-item" v-for="(item,index) in list.data" :key="index" @click="itemClick(item.p_id)">
+          <img v-if="item.p_image" :src="item.p_image"/>
           <div class="item-body">
               <div class="item-desc">{{item.p_desc}}</div>
               <div class="item-footer">
-                  <div class="avatar" :style="{ backgroundImage : `url(${item.usericon})` }"></div>
+                  <div class="avatar" :style="{ backgroundImage : `url(${item.userinfo.usericon})` }"></div>
                     <div style="height : 40px;flex-flow: column;display:flex;">
-                      <div class="name">{{item.username | showName }}</div>
+                      <div class="name">{{item.userinfo.username | showName }}</div>
                       <div class="date">{{item.p_date | showDate}}</div>
                     </div>
                   <div class="like" :class="item.liked?'active':''" >
@@ -20,6 +21,11 @@
         </div>
     </waterfall>
   </div>
+  <div class="no_data" v-else>
+    <img src="../../../assets/no_data.png" alt="">
+    <div>该城市暂无数据~</div>
+  </div>
+</div>
 </template>
 
 
@@ -33,15 +39,15 @@ export default {
     }
   },
   props:{
-    arr : {
-      type : Array,
+    list : {
+      type : Object,
       default(){
-        return []
+        return {}
       }
     }
   },
    watch: {
-    arr: {
+    list: {
       handler(newValue, oldValue) {
         this.reFresh= false
         this.$nextTick(()=>{
@@ -53,11 +59,9 @@ export default {
   },
   methods:{
     scroll(scrollData){
-      if(scrollData.scrollTop > 0){
-        this.$emit('scroll')
-      }else{
-        this.$emit('noscroll')
-      }
+      // if(scrollData.scrollTop > 0){
+      //   // this.$emit('scroll',scrollData.scrollTop)
+      // }
     },
     switchCol(col){
           this.col = col
@@ -65,7 +69,7 @@ export default {
     },
     loadmore(){
       console.log(111);
-      // this.arr = this.arr.concat(this.arr)
+      this.list.data = this.list.data.concat(this.list.data)
     },
     itemClick(id){
       this.$router.push('/details/' + id)
@@ -80,7 +84,7 @@ export default {
           }
         },
         showDate: function (value) {
-          let date = new Date(value);
+          let date = new Date(value*1000);
           return formatDate(date, 'yyyy-MM-dd hh:mm')
         }
       }
@@ -100,6 +104,9 @@ export default {
 }
 .container-water-fall{
   margin-bottom: 50px;
+  height: calc(100vh - 93px);
+  /* background-color: red; */
+  overflow: hidden;
 }
 .container-water-fall .cell-item{
     width: 100%;
@@ -178,5 +185,22 @@ export default {
 .like img{
   width: 16px !important;
   height: 16px;
+}
+.no_data{
+  margin-top: 80px;
+  width: 100%;
+  text-align: center;
+}
+.no_data img{
+  display: inline-block;
+  width: 60%;
+  height: auto;
+}
+.no_data div{
+  margin-top: 20px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #748AA1;
 }
   </style>

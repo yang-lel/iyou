@@ -33,7 +33,7 @@
     </div>
     </div>
     </div>
-<details-tab-bar v-show="isTabBarShow"/>
+<details-tab-bar :p_id="p_id" v-show="isTabBarShow"/>
 <!-- <div class="title">相关推荐</div>
 <list :arr="list"/> -->
   </div>
@@ -63,10 +63,11 @@ export default {
         date : '',
         location : '',
         desc : '',
-        keyword : []
+        keyword : [],
+        // p_id : 0,
       },
       isTabBarShow : true,
-      p_id : this.$route.params.p_id,
+      p_id : 0,
       list : null,
       reFresh : true
     }
@@ -92,19 +93,19 @@ export default {
   },
   created(){
     console.log('创建');
-    this.p_id=this.$route.params.p_id
+    this.p_id = parseInt(this.$route.params.p_id)
     getDetailsData(this.p_id).then(res => {
       console.log(res);
       if(res.code == 200 && res.data){
-        let keyword = res.data[0].keyword.split('，')
-        this.detailsInfo.banners = res.data[1].banners
-        this.detailsInfo.content = res.data[0].p_content
-        this.detailsInfo.username = res.data[0].username
-        this.detailsInfo.usericon = res.data[0].usericon
-        this.detailsInfo.desc = res.data[0].p_desc
+        let keyword = res.data.keyword.split('，')
+        this.detailsInfo.banners = res.data.images
+        this.detailsInfo.content = res.data.p_content
+        this.detailsInfo.username = res.data.userinfo.username
+        this.detailsInfo.usericon = res.data.userinfo.usericon
+        this.detailsInfo.desc = res.data.p_desc
         this.detailsInfo.keyword = keyword
-        this.detailsInfo.location = res.data[0].location
-        this.detailsInfo.date = res.data[0].p_date
+        this.detailsInfo.location = res.data.location
+        this.detailsInfo.date = res.data.p_date
       }
     })
     getRecommendData().then(res => {
@@ -117,8 +118,8 @@ export default {
   },
   methods:{
     back(){
-      // this.$router.go(-1);
-      console.log(this.$router.go(-1));
+      this.$router.go(-1);
+      // console.log(this.$router.go(-1));
       // this.$destroyed();
     },
     test(){
@@ -140,7 +141,7 @@ export default {
       return '#'+ value
     },
     showDate: function (value) {
-      let date = new Date(value);
+      let date = new Date(value*1000);
       return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },

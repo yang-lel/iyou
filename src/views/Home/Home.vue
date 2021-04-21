@@ -7,22 +7,17 @@
         <div class="nav-middle" slot="middle">
           <tab-control :titles="['推荐','|','城市']"
                   @tabClick="tabClick"
-                  v-if="tabIsShow">
+                  >
           </tab-control>
-
-          <div style="color : #409EFF" v-else>首 页</div>
+          <!-- <div style="color : #409EFF" v-else>首 页</div> -->
 
           </div>
           <div class="nav-right" slot="right">
           <i slot="suffix" class="el-icon-search" @click="searchClick"></i>
           </div>  
       </nav-bar>
-
-
-      
-
       <div class="content">
-        <div class="nav" @click="test" ref="nav">
+        <!-- <div class="nav" @click="test" ref="nav">
           <el-card class="box-card">
             <el-row class="nav-box">
               <div class="content-box">
@@ -74,21 +69,20 @@
             
             </el-row>
           </el-card>          
-        </div>
+        </div>-->
           <!-- 轮播 -->
-          <el-carousel :interval="2000" type="card" height="325px">
+          <!-- <el-carousel :interval="2000" type="card" height="325px">
             <el-carousel-item v-for="item in 3" :key="item">
               <h3 class="medium"></h3>
             </el-carousel-item>
-          </el-carousel>
-          <!-- <div class="list-title">
-            游记大全
-          </div> -->
-          <tab-control :titles="['推荐','','城市']"
+          </el-carousel> -->
+          <!-- <tab-control :titles="['推荐','','城市']"
                   @tabClick="tabClick"
                   v-if="true" class="tabcontrol">
-          </tab-control>
-          <list class="list" @scroll="scroll" @noscroll="noscroll" :arr="list"></list>
+          </tab-control> -->
+          <div style="height:42px;width:100%"></div>
+          <!-- <list class="list" @scroll="scroll" @noscroll="noscroll" :list="list"></list> -->
+          <list class="list" :list="list"></list>
      </div>
   </div>
 </template>
@@ -99,18 +93,19 @@ import List from '../../components/content/list/List'
 
 import TabControl from '../../components/content/tabControl/tabControl';
 import ChangeCity from './childcpn/ChangeCity'
-
 import { getRecommendData , getCityData} from '../../network/home'
 export default {
   name: 'Home',
   data(){
     return {
-      list : null,
-      recommend : [],
-      city : [],
+      list : {},
+      recommend : null,
+      city : null,
       isShow  : false,
       search : '',
       tabIsShow : false,
+      // scroll : 0,
+      currentIndex : 0,
     }
   },
   components: { 
@@ -125,18 +120,27 @@ export default {
     */
     getRecommendData(){
       getRecommendData().then(res =>{
-        if(res.code == 200 && res.code){
+        if(res.code == 200 && res.data){
+          console.log(res);
           this.recommend = res.data;
           this.list = this.recommend
         }
         
       })
     },
-    getCityData(){
+    getCityData(callback){
+      if(this.$store.state.location == '定位中')  return
       getCityData(this.$store.state.location).then(res =>{
+          console.log(res);
         if(res.code == 200 && res.code){
           this.city = res.data;
+        }else if(res.code == 201){
+          this.city == res.data
         }
+        if(this.currentIndex == 2){
+            // this.list == null
+            this.list = this.city
+          }
       })
     },
 
@@ -144,6 +148,9 @@ export default {
     * navbar 部分方法
     */
     tabClick(index){
+      if(this.$store.state.location == '定位中')  return
+      this.currentIndex = index
+      console.log(this.currentIndex);
       index === 0 ? this.list = this.recommend : this.list = this.city
     },
     searchClick(){
@@ -154,11 +161,8 @@ export default {
     * 分类导航方法
     */
     scroll(){
-      var aaa = document.getElementsByClassName('nav')[0].clientHeight
-      console.log(aaa);
-      var bbb = aaa+64+325+29
-      window.scrollTo(0,bbb)
-      this.tabIsShow = true
+      // console.log(val);
+      // this.data.scroll = val
     },  
     noscroll(){
       // window.scrollTo(0,374)
@@ -167,27 +171,37 @@ export default {
    /*
    *
    */
-    test(){
-      var aaa = document.getElementsByClassName('nav')[0].clientHeight
-      console.log(aaa);
-      window.scrollTo(0,aaa+64+325+29)
-        this.tabIsShow = true
-        //清空localStorage数据
-        // localStorage.clear()
+    // test(){
+    //   var aaa = document.getElementsByClassName('nav')[0].clientHeight
+    //   console.log(aaa);
+    //   window.scrollTo(0,aaa+64+325+29)
+    //     this.tabIsShow = true
+    //     //清空localStorage数据
+    //     // localStorage.clear()
 
-      console.log(localStorage.getItem("userinfo"));
-    },
+    //   console.log(localStorage.getItem("userinfo"));
+    // },
     /* 处理数据的方法
     */
    showlist(){
      return this.list
    },
    locationChange(){
-     this.getCityData();
+     if(this.$store.state.location != '定位中'){
+      //  console.log('kaishi');
+      this.city = {}
+       this.getCityData();
+     }
    }
   },
   created(){
     this.getRecommendData();
+  },
+  deactivated(){
+
+  },
+  activated(){
+    
   }
 }
 </script>
@@ -200,8 +214,8 @@ export default {
 }
 #home{
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: scroll;
+  height: 100vh;
+  overflow: hidden;
 }
 .nav-middle{
   text-align: center;
@@ -338,5 +352,6 @@ div>>>.el-card__body{
   font-weight: 600;
   margin-left: 5%;
 }
+
 </style>
 
